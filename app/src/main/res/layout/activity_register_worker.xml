@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F0FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <!-- BACK BUTTON -->
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="← Back"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:backgroundTint="#7E57C2"
+            android:layout_marginBottom="25dp" />
+
+        <!-- TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Worker Registration"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#5B2C91"
+            android:layout_gravity="center" />
+
+        <!-- SUB TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create your professional worker profile"
+            android:textSize="15sp"
+            android:textColor="#7E57C2"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="28dp" />
+
+        <!-- MAIN CARD -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            android:padding="24dp">
+
+            <!-- PROFILE IMAGE -->
+
+            <ImageView
+                android:id="@+id/imageProfile"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:src="@drawable/worker1"
+                android:scaleType="centerCrop"
+                android:background="@drawable/round_image"
+                android:clipToOutline="true"
+                android:layout_marginBottom="20dp" />
+
+            <!-- CHOOSE IMAGE BUTTON -->
+
+            <Button
+                android:id="@+id/btnChooseImage"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="CHOOSE PROFILE PHOTO"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:backgroundTint="#7E57C2"
+                android:layout_marginBottom="24dp" />
+
+            <!-- NAME -->
+
+            <EditText
+                android:id="@+id/editName"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Full Name"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:background="#F3EFFF"
+                android:padding="15dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- WORK TYPE -->
+
+            <EditText
+                android:id="@+id/editWork"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Work Type"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:background="#F3EFFF"
+                android:padding="15dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- PHONE -->
+
+            <EditText
+                android:id="@+id/editPhone"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Phone Number"
+                android:inputType="phone"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:background="#F3EFFF"
+                android:padding="15dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- LOCATION -->
+
+            <EditText
+                android:id="@+id/editLocation"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Location"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:background="#F3EFFF"
+                android:padding="15dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- RATE -->
+
+            <EditText
+                android:id="@+id/editRate"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Daily Rate / Amount"
+                android:inputType="number"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:background="#F3EFFF"
+                android:padding="15dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- SWITCH CARD -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#F3EFFF"
+                android:padding="14dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Available for Work"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#5B2C91" />
+
+                <Switch
+                    android:id="@+id/switchAvailability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- SAVE BUTTON -->
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="SAVE PROFILE"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:backgroundTint="#7E57C2" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

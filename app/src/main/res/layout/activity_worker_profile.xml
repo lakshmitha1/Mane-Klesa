@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F0FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- BACK BUTTON -->
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Back"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:backgroundTint="#7E57C2"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="25dp" />
+
+        <!-- PROFILE CARD -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="25dp"
+            android:elevation="10dp">
+
+            <!-- PROFILE IMAGE -->
+
+            <ImageView
+                android:id="@+id/imageProfile"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="center"
+                android:src="@drawable/worker1"
+                android:scaleType="centerCrop"
+                android:background="@android:color/white" />
+
+            <!-- TITLE -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Worker Profile"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#5B2C91"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp" />
+
+            <!-- NAME -->
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:padding="15dp"
+                android:background="#F3EFFF"
+                android:layout_marginBottom="15dp" />
+
+            <!-- WORK -->
+
+            <TextView
+                android:id="@+id/textWork"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:padding="15dp"
+                android:background="#F3EFFF"
+                android:layout_marginBottom="15dp" />
+
+            <!-- PHONE -->
+
+            <TextView
+                android:id="@+id/textPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:padding="15dp"
+                android:background="#F3EFFF"
+                android:layout_marginBottom="15dp" />
+
+            <!-- LOCATION -->
+
+            <TextView
+                android:id="@+id/textLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:padding="15dp"
+                android:background="#F3EFFF"
+                android:layout_marginBottom="15dp" />
+
+            <!-- STATUS -->
+
+            <TextView
+                android:id="@+id/textStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:padding="15dp"
+                android:background="#F3EFFF"
+                android:layout_marginBottom="15dp" />
+
+            <!-- RATING -->
+
+            <TextView
+                android:id="@+id/textRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#5B2C91"
+                android:padding="15dp"
+                android:background="#EDE7F6" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

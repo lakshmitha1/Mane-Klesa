@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F0FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- TOP SPACE -->
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="70dp" />
+
+        <!-- APP TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Login"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#5B2C91"
+            android:layout_gravity="center" />
+
+        <!-- SUB TITLE -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check your bookings easily"
+            android:textSize="16sp"
+            android:textColor="#7E57C2"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="35dp" />
+
+        <!-- LOGIN CARD -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:background="#FFFFFF"
+            android:elevation="8dp">
+
+            <!-- CUSTOMER IMAGE -->
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/customer"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="20dp" />
+
+            <!-- PHONE -->
+
+            <EditText
+                android:id="@+id/editCustomerPhone"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:hint="Enter Your Phone Number"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:inputType="phone"
+                android:background="#F3EFFF"
+                android:padding="15dp" />
+
+            <!-- LOGIN BUTTON -->
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="LOGIN"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:backgroundTint="#7E57C2"
+                android:layout_marginTop="25dp" />
+
+            <!-- BACK BUTTON -->
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:text="← Back"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:backgroundTint="#7E57C2"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

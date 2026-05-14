@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- INTERNET -->
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+
+    <!-- CALL -->
+    <uses-permission
+        android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Mane-Kelsa"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Likhitha">
+
+        <!-- MAIN -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+
+                <action
+                    android:name="android.intent.action.MAIN" />
+
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
+        </activity>
+
+        <!-- REGISTER WORKER -->
+        <activity
+            android:name=".RegisterWorkerActivity"
+            android:exported="false" />
+
+        <!-- FIND WORKER -->
+        <activity
+            android:name=".FindWorkerActivity"
+            android:exported="false" />
+
+        <!-- WORKER PROFILE -->
+        <activity
+            android:name=".WorkerProfileActivity"
+            android:exported="false" />
+
+        <!-- WORKER BOOKINGS -->
+        <activity
+            android:name=".WorkerBookingsActivity"
+            android:exported="false" />
+
+        <!-- CUSTOMER BOOKINGS -->
+        <activity
+            android:name=".CustomerBookingsActivity"
+            android:exported="false" />
+
+        <!-- CUSTOMER LOGIN -->
+        <activity
+            android:name=".CustomerLoginActivity"
+            android:exported="false" />
+
+        <!-- WORKER LOGIN -->
+        <activity
+            android:name=".WorkerLoginActivity"
+            android:exported="false" />
+
+        <!-- WORKER DASHBOARD -->
+        <activity
+            android:name=".WorkerDashboardActivity"
+            android:exported="false" />
+
+        <!-- BOOKING ACTIVITY -->
+        <activity
+            android:name=".BookingActivity"
+            android:exported="false" />
+        <activity android:name=".EditWorkerProfileActivity"/>
+
+    </application>
+
+</manifest>

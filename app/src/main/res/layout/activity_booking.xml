@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Book Worker"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="20dp"/>
+
+        <EditText
+            android:id="@+id/editCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Name"/>
+
+        <EditText
+            android:id="@+id/editCustomerPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Phone"
+            android:inputType="phone"/>
+
+        <EditText
+            android:id="@+id/editCustomerAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Address"/>
+
+        <Button
+            android:id="@+id/btnConfirmBooking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CONFIRM BOOKING"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
+
+</ScrollView>

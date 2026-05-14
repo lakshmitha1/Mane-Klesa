@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Back"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:backgroundTint="#7E57C2"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="20dp" />
+
+        <ImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:background="@drawable/round_image"
+            android:scaleType="centerCrop" />
+
+        <Button
+            android:id="@+id/btnChooseImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Profile Image"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name" />
+
+        <EditText
+            android:id="@+id/editWork"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Work" />
+
+        <EditText
+            android:id="@+id/editPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone" />
+
+        <EditText
+            android:id="@+id/editLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location" />
+
+        <EditText
+            android:id="@+id/editRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Amount" />
+
+        <Switch
+            android:id="@+id/switchAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available" />
+
+        <Button
+            android:id="@+id/btnUpdateProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Profile" />
+
+    </LinearLayout>
+
+</ScrollView>

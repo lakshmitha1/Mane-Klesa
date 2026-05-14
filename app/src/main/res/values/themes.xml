@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style
+        name="Theme.Likhitha"
+        parent="Theme.Material3.Light.NoActionBar">
+
+        <!-- Primary Purple -->
+        <item name="colorPrimary">#7E57C2</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">#5B2C91</item>
+
+        <!-- Background -->
+        <item name="android:windowBackground">#F6F0FF</item>
+
+    </style>
+
+</resources>
