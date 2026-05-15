@@ -79,7 +79,11 @@
         <activity
             android:name=".BookingActivity"
             android:exported="false" />
-        <activity android:name=".EditWorkerProfileActivity"/>
+
+        <!-- EDIT WORKER PROFILE -->
+        <activity
+            android:name=".EditWorkerProfileActivity"
+            android:exported="false" />
 
     </application>
 

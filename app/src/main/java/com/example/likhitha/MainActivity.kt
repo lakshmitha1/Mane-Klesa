@@ -2,6 +2,7 @@ package com.example.likhitha
 
 import android.content.Intent
 import android.os.Bundle
+import com.google.firebase.database.FirebaseDatabase
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.List
@@ -80,6 +83,7 @@ fun WorkerHiringApp() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(24.dp),
 
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -87,7 +91,6 @@ fun WorkerHiringApp() {
                 verticalArrangement = Arrangement.Center
             ) {
 
-                // WELCOME TEXT
                 Text(
                     text = "Welcome to",
                     fontSize = 24.sp,
@@ -98,7 +101,6 @@ fun WorkerHiringApp() {
                     modifier = Modifier.height(8.dp)
                 )
 
-                // APP NAME
                 Text(
                     text = "Mane-Kelsa",
                     fontSize = 42.sp,
@@ -110,7 +112,6 @@ fun WorkerHiringApp() {
                     modifier = Modifier.height(10.dp)
                 )
 
-                // SUBTITLE
                 Text(
                     text = "Your trusted partner\nfor every work",
                     fontSize = 18.sp,
@@ -122,7 +123,6 @@ fun WorkerHiringApp() {
                     modifier = Modifier.height(28.dp)
                 )
 
-                // WORKER IMAGE
                 Image(
                     painter = painterResource(
                         id = R.drawable.worker
@@ -142,6 +142,12 @@ fun WorkerHiringApp() {
                 // FIND WORKERS BUTTON
                 Button(
                     onClick = {
+
+                        val database = FirebaseDatabase.getInstance()
+
+                        val ref = database.getReference("test")
+
+                        ref.setValue("Firebase Connected")
 
                         val intent =
                             Intent(
@@ -326,6 +332,10 @@ fun WorkerHiringApp() {
                         )
                     }
                 }
+
+                Spacer(
+                    modifier = Modifier.height(30.dp)
+                )
             }
         }
     }

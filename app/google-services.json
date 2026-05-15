@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "327611033422",
+    "firebase_url": "https://lexical-aileron-490608-s3-default-rtdb.firebaseio.com",
+    "project_id": "lexical-aileron-490608-s3",
+    "storage_bucket": "lexical-aileron-490608-s3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327611033422:android:5306a98c0e53b48f91e01f",
+        "android_client_info": {
+          "package_name": "com.example.likhitha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtraydD4JAm77vo44JYL9FrLi1jCM4Inw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327611033422:android:8d9f70bc32f11a9191e01f",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtraydD4JAm77vo44JYL9FrLi1jCM4Inw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327611033422:android:3f00b5470bc593f291e01f",
+        "android_client_info": {
+          "package_name": "com.example.selfemployment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtraydD4JAm77vo44JYL9FrLi1jCM4Inw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327611033422:android:7a8e348243049b8891e01f",
+        "android_client_info": {
+          "package_name": "com.example.workerhiringapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtraydD4JAm77vo44JYL9FrLi1jCM4Inw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327611033422-cqim3fb29sis0og4sa7ave0fogitjdik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

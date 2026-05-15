@@ -1,14 +1,12 @@
 package com.example.likhitha
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class WorkerDashboardActivity : AppCompatActivity() {
 
@@ -19,6 +17,7 @@ class WorkerDashboardActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_worker_dashboard
         )
+
         val btnBack =
             findViewById<Button>(R.id.btnBack)
 
@@ -46,174 +45,102 @@ class WorkerDashboardActivity : AppCompatActivity() {
             findViewById<Button>(R.id.btnEditProfile)
 
         // GET PHONE FROM LOGIN
-        val workerPhone =
+
+        var workerPhone =
             intent.getStringExtra("phone") ?: ""
 
-        val sharedPreferences =
-            getSharedPreferences(
-                "WorkersData",
-                MODE_PRIVATE
-            )
+        // FIREBASE
 
-        // GET WORKER NAME
-        val workersData =
-            sharedPreferences.getString(
-                "workers",
-                ""
-            ) ?: ""
+        val workersRef =
+            FirebaseDatabase.getInstance()
+                .getReference("Workers")
 
-        val workersList =
-            workersData.split("###")
+        // LOAD WORKER NAME
 
-        var workerName = ""
+        workersRef.child(workerPhone)
+            .get()
+            .addOnSuccessListener { snapshot ->
 
-        for (worker in workersList) {
+                if (snapshot.exists()) {
 
-            if (
-                worker.contains("Phone:$workerPhone")
-            ) {
+                    val workerName =
+                        snapshot.child("name")
+                            .value.toString()
 
-                val details =
-                    worker.split("|")
-
-                for (item in details) {
-
-                    if (
-                        item.startsWith("Name:")
-                    ) {
-
-                        workerName =
-                            item.replace(
-                                "Name:",
-                                ""
-                            )
-                    }
+                    textWelcome.text =
+                        "Welcome $workerName"
                 }
             }
-        }
-
-        textWelcome.text =
-            "Welcome $workerName"
 
         // MY PROFILE
+
         btnMyProfile.setOnClickListener {
 
-            val workersDataProfile =
-                sharedPreferences.getString(
-                    "workers",
-                    ""
-                ) ?: ""
+            workersRef.child(workerPhone)
+                .get()
+                .addOnSuccessListener { snapshot ->
 
-            val workersListProfile =
-                workersDataProfile.split("###")
+                    if (snapshot.exists()) {
 
-            for (worker in workersListProfile) {
+                        val name =
+                            snapshot.child("name")
+                                .value.toString()
 
-                if (
-                    worker.contains("Phone:$workerPhone")
-                ) {
+                        val work =
+                            snapshot.child("work")
+                                .value.toString()
 
-                    val details =
-                        worker.split("|")
+                        val phone =
+                            snapshot.child("phone")
+                                .value.toString()
 
-                    var name = ""
-                    var work = ""
-                    var phone = ""
-                    var location = ""
-                    var status = ""
-                    var image = ""
-                    var rating = "0"
-                    var rate = ""
+                        val location =
+                            snapshot.child("location")
+                                .value.toString()
 
-                    for (item in details) {
+                        val status =
+                            snapshot.child("status")
+                                .value.toString()
 
-                        when {
+                        val image =
+                            snapshot.child("image")
+                                .value.toString()
 
-                            item.startsWith("Name:") ->
-                                name =
-                                    item.replace(
-                                        "Name:",
-                                        ""
-                                    )
+                        val rating =
+                            snapshot.child("rating")
+                                .value.toString()
 
-                            item.startsWith("Work:") ->
-                                work =
-                                    item.replace(
-                                        "Work:",
-                                        ""
-                                    )
+                        val rate =
+                            snapshot.child("rate")
+                                .value.toString()
 
-                            item.startsWith("Phone:") ->
-                                phone =
-                                    item.replace(
-                                        "Phone:",
-                                        ""
-                                    )
+                        val intent =
+                            Intent(
+                                this,
+                                WorkerProfileActivity::class.java
+                            )
 
-                            item.startsWith("Location:") ->
-                                location =
-                                    item.replace(
-                                        "Location:",
-                                        ""
-                                    )
+                        intent.putExtra("name", name)
+                        intent.putExtra("work", work)
+                        intent.putExtra("phone", phone)
+                        intent.putExtra("location", location)
+                        intent.putExtra("status", status)
+                        intent.putExtra("image", image)
+                        intent.putExtra("rating", rating)
+                        intent.putExtra("rate", rate)
 
-                            item.startsWith("Status:") ->
-                                status =
-                                    item.replace(
-                                        "Status:",
-                                        ""
-                                    )
-
-                            item.startsWith("Image:") ->
-                                image =
-                                    item.replace(
-                                        "Image:",
-                                        ""
-                                    )
-
-                            item.startsWith("Rating:") ->
-                                rating =
-                                    item.replace(
-                                        "Rating:",
-                                        ""
-                                    )
-
-                            item.startsWith("Rate:") ->
-                                rate =
-                                    item.replace(
-                                        "Rate:",
-                                        ""
-                                    )
-                        }
-                    }
-
-                    val intent =
-                        Intent(
-                            this,
-                            WorkerProfileActivity::class.java
+                        intent.putExtra(
+                            "workerPhone",
+                            phone
                         )
 
-                    intent.putExtra("name", name)
-                    intent.putExtra("work", work)
-                    intent.putExtra("phone", phone)
-                    intent.putExtra("location", location)
-                    intent.putExtra("status", status)
-                    intent.putExtra("image", image)
-                    intent.putExtra("rating", rating)
-                    intent.putExtra("rate", rate)
-
-                    // IMPORTANT
-                    intent.putExtra(
-                        "workerPhone",
-                        phone
-                    )
-
-                    startActivity(intent)
+                        startActivity(intent)
+                    }
                 }
-            }
         }
 
         // MY BOOKINGS
+
         btnMyBookings.setOnClickListener {
 
             val intent =
@@ -231,87 +158,47 @@ class WorkerDashboardActivity : AppCompatActivity() {
         }
 
         // CHANGE AVAILABILITY
+
         btnAvailability.setOnClickListener {
 
-            val latestWorkersData =
-                sharedPreferences.getString(
-                    "workers",
-                    ""
-                ) ?: ""
+            workersRef.child(workerPhone)
+                .get()
+                .addOnSuccessListener { snapshot ->
 
-            val latestWorkersList =
-                latestWorkersData.split("###")
+                    if (snapshot.exists()) {
 
-            var updatedData = ""
+                        val currentStatus =
+                            snapshot.child("status")
+                                .value.toString()
 
-            var newStatus = ""
-
-            for (worker in latestWorkersList) {
-
-                if (
-                    worker.contains("Phone:$workerPhone")
-                ) {
-
-                    val updatedWorker =
-
-                        if (
-                            worker.contains("Status:Online")
-                        ) {
-
-                            newStatus = "Offline"
-
-                            worker.replace(
-                                "Status:Online",
-                                "Status:Offline"
-                            )
-
-                        } else {
-
-                            newStatus = "Online"
+                        val newStatus =
 
                             if (
-                                worker.contains("Status:Offline")
-                            ) {
-
-                                worker.replace(
-                                    "Status:Offline",
-                                    "Status:Online"
+                                currentStatus.equals(
+                                    "Online",
+                                    true
                                 )
-
+                            ) {
+                                "Offline"
                             } else {
-
-                                worker +
-                                        "|Status:Online"
+                                "Online"
                             }
-                        }
 
-                    updatedData +=
-                        updatedWorker + "###"
+                        workersRef.child(workerPhone)
+                            .child("status")
+                            .setValue(newStatus)
 
-                } else {
-
-                    if (worker.isNotEmpty()) {
-
-                        updatedData +=
-                            worker + "###"
+                        Toast.makeText(
+                            this,
+                            "Availability Changed to $newStatus",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
-            }
-
-            sharedPreferences.edit()
-                .putString(
-                    "workers",
-                    updatedData
-                )
-                .apply()
-
-            Toast.makeText(
-                this,
-                "Availability Changed to $newStatus",
-                Toast.LENGTH_SHORT
-            ).show()
         }
-// EDIT PROFILE
+
+        // EDIT PROFILE
+
         btnEditProfile.setOnClickListener {
 
             val intent =
@@ -327,7 +214,9 @@ class WorkerDashboardActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
         // LOGOUT
+
         btnLogout.setOnClickListener {
 
             finish()

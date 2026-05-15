@@ -11,6 +11,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class WorkerBookingsActivity : AppCompatActivity() {
 
@@ -40,13 +41,9 @@ class WorkerBookingsActivity : AppCompatActivity() {
 
         setContentView(scrollView)
 
-        // BACK BUTTON
-
         val btnBack = Button(this)
 
         btnBack.text = "← Back"
-
-        btnBack.textSize = 16f
 
         btnBack.setTextColor(Color.WHITE)
 
@@ -60,15 +57,15 @@ class WorkerBookingsActivity : AppCompatActivity() {
 
         mainLayout.addView(btnBack)
 
-        // HEADING
-
         val heading = TextView(this)
 
-        heading.text = "Worker Booking Requests"
+        heading.text =
+            "Worker Booking Requests"
 
         heading.textSize = 28f
 
-        heading.gravity = Gravity.CENTER
+        heading.gravity =
+            Gravity.CENTER
 
         heading.setTextColor(
             Color.parseColor("#5B2C91")
@@ -78,503 +75,296 @@ class WorkerBookingsActivity : AppCompatActivity() {
             0,
             40,
             0,
-            15
+            20
         )
 
         mainLayout.addView(heading)
 
-        // SUBTITLE
-
-        val subTitle = TextView(this)
-
-        subTitle.text =
-            "Manage customer bookings easily"
-
-        subTitle.textSize = 16f
-
-        subTitle.gravity = Gravity.CENTER
-
-        subTitle.setTextColor(
-            Color.parseColor("#7E57C2")
-        )
-
-        subTitle.setPadding(
-            0,
-            0,
-            0,
-            40
-        )
-
-        mainLayout.addView(subTitle)
-
-        // GET WORKER PHONE
-
         val workerPhone =
-            intent.getStringExtra(
-                "phone"
-            ) ?: ""
+            intent.getStringExtra("phone") ?: ""
 
-        // BOOKINGS DATA
+        val database =
+            FirebaseDatabase.getInstance()
 
-        val sharedPreferences =
-            getSharedPreferences(
-                "BookingsData",
-                MODE_PRIVATE
-            )
+        val bookingsRef =
+            database.getReference("Bookings")
 
-        val bookings =
-            sharedPreferences.getString(
-                "bookings",
-                ""
-            ) ?: ""
+        bookingsRef.get()
+            .addOnSuccessListener { snapshot ->
 
-        if (bookings.isEmpty()) {
+                if (!snapshot.exists()) {
 
-            val emptyText =
-                TextView(this)
+                    val emptyText =
+                        TextView(this)
 
-            emptyText.text =
-                "No Booking Requests"
+                    emptyText.text =
+                        "No Booking Requests"
 
-            emptyText.textSize = 22f
+                    emptyText.textSize = 22f
 
-            emptyText.gravity =
-                Gravity.CENTER
+                    emptyText.gravity =
+                        Gravity.CENTER
 
-            mainLayout.addView(emptyText)
+                    mainLayout.addView(emptyText)
 
-            return
-        }
+                    return@addOnSuccessListener
+                }
 
-        val bookingList =
-            bookings.split("###").toMutableList()
+                for (bookingSnapshot in snapshot.children) {
 
-        for (i in bookingList.indices) {
+                    val bookingId =
+                        bookingSnapshot.key.toString()
 
-            val booking = bookingList[i]
+                    val customer =
+                        bookingSnapshot.child("customerName")
+                            .value.toString()
 
-            if (
-                booking.contains(
-                    "WorkerPhone:$workerPhone"
-                )
-            ) {
+                    val customerPhone =
+                        bookingSnapshot.child("customerPhone")
+                            .value.toString()
 
-                val details =
-                    booking.split("|")
+                    val work =
+                        bookingSnapshot.child("workerWork")
+                            .value.toString()
 
-                var customer = ""
-                var customerPhone = ""
-                var work = ""
-                var location = ""
-                var status = ""
+                    val location =
+                        bookingSnapshot.child("customerLocation")
+                            .value.toString()
 
-                for (item in details) {
+                    val status =
+                        bookingSnapshot.child("status")
+                            .value.toString()
 
-                    when {
+                    val workerPhoneDb =
+                        bookingSnapshot.child("workerPhone")
+                            .value.toString()
 
-                        item.startsWith("Customer:") -> {
+                    if (workerPhoneDb == workerPhone) {
 
-                            customer =
-                                item.replace(
-                                    "Customer:",
-                                    ""
-                                )
+                        val cardLayout =
+                            LinearLayout(this)
+
+                        cardLayout.orientation =
+                            LinearLayout.VERTICAL
+
+                        cardLayout.setPadding(
+                            35,
+                            35,
+                            35,
+                            35
+                        )
+
+                        cardLayout.setBackgroundColor(
+                            Color.WHITE
+                        )
+
+                        cardLayout.elevation = 10f
+
+                        val params =
+                            LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+
+                        params.setMargins(
+                            0,
+                            0,
+                            0,
+                            40
+                        )
+
+                        cardLayout.layoutParams =
+                            params
+
+                        val bookingText =
+                            TextView(this)
+
+                        bookingText.text =
+
+                            "👤 Customer : $customer\n\n" +
+
+                                    "📞 Phone : $customerPhone\n\n" +
+
+                                    "🛠 Work : $work\n\n" +
+
+                                    "📍 Address : $location\n\n" +
+
+                                    "📌 Status : $status"
+
+                        bookingText.textSize = 18f
+
+                        bookingText.setTextColor(
+                            Color.BLACK
+                        )
+
+                        cardLayout.addView(
+                            bookingText
+                        )
+
+                        if (status == "PENDING") {
+
+                            val acceptBtn =
+                                Button(this)
+
+                            acceptBtn.text =
+                                "ACCEPT BOOKING"
+
+                            acceptBtn.setBackgroundColor(
+                                Color.parseColor("#4CAF50")
+                            )
+
+                            acceptBtn.setTextColor(
+                                Color.WHITE
+                            )
+
+                            acceptBtn.setOnClickListener {
+
+                                bookingsRef.child(bookingId)
+                                    .child("status")
+                                    .setValue("ACCEPTED")
+
+                                Toast.makeText(
+                                    this,
+                                    "Booking Accepted",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                recreate()
+                            }
+
+                            cardLayout.addView(
+                                acceptBtn
+                            )
+
+                            val declineBtn =
+                                Button(this)
+
+                            declineBtn.text =
+                                "DECLINE BOOKING"
+
+                            declineBtn.setBackgroundColor(
+                                Color.RED
+                            )
+
+                            declineBtn.setTextColor(
+                                Color.WHITE
+                            )
+
+                            declineBtn.setOnClickListener {
+
+                                bookingsRef.child(bookingId)
+                                    .child("status")
+                                    .setValue("DECLINED")
+
+                                Toast.makeText(
+                                    this,
+                                    "Booking Declined",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                recreate()
+                            }
+
+                            cardLayout.addView(
+                                declineBtn
+                            )
                         }
 
-                        item.startsWith("CustomerPhone:") -> {
+                        if (status == "ACCEPTED") {
 
-                            customerPhone =
-                                item.replace(
-                                    "CustomerPhone:",
-                                    ""
-                                )
+                            val completeBtn =
+                                Button(this)
+
+                            completeBtn.text =
+                                "MARK AS COMPLETED"
+
+                            completeBtn.setBackgroundColor(
+                                Color.parseColor("#FF9800")
+                            )
+
+                            completeBtn.setTextColor(
+                                Color.WHITE
+                            )
+
+                            completeBtn.setOnClickListener {
+
+                                bookingsRef.child(bookingId)
+                                    .child("status")
+                                    .setValue("COMPLETED")
+
+                                Toast.makeText(
+                                    this,
+                                    "Work Completed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                recreate()
+                            }
+
+                            cardLayout.addView(
+                                completeBtn
+                            )
                         }
 
-                        item.startsWith("Work:") -> {
+                        val callBtn =
+                            Button(this)
 
-                            work =
-                                item.replace(
-                                    "Work:",
-                                    ""
+                        callBtn.text =
+                            "CALL CUSTOMER"
+
+                        callBtn.setBackgroundColor(
+                            Color.parseColor("#7E57C2")
+                        )
+
+                        callBtn.setTextColor(
+                            Color.WHITE
+                        )
+
+                        callBtn.setOnClickListener {
+
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_DIAL,
+                                    Uri.parse("tel:$customerPhone")
                                 )
+
+                            startActivity(intent)
                         }
 
-                        item.startsWith("CustomerLocation:") -> {
+                        cardLayout.addView(callBtn)
 
-                            location =
-                                item.replace(
-                                    "CustomerLocation:",
-                                    ""
+                        val locationBtn =
+                            Button(this)
+
+                        locationBtn.text =
+                            "OPEN CUSTOMER LOCATION"
+
+                        locationBtn.setBackgroundColor(
+                            Color.parseColor("#5B2C91")
+                        )
+
+                        locationBtn.setTextColor(
+                            Color.WHITE
+                        )
+
+                        locationBtn.setOnClickListener {
+
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "geo:0,0?q=$location"
+                                    )
                                 )
+
+                            startActivity(intent)
                         }
 
-                        item.startsWith("Status:") -> {
+                        cardLayout.addView(locationBtn)
 
-                            status =
-                                item.replace(
-                                    "Status:",
-                                    ""
-                                )
-                        }
+                        mainLayout.addView(cardLayout)
                     }
                 }
-
-                // CARD LAYOUT
-
-                val cardLayout =
-                    LinearLayout(this)
-
-                cardLayout.orientation =
-                    LinearLayout.VERTICAL
-
-                cardLayout.setPadding(
-                    35,
-                    35,
-                    35,
-                    35
-                )
-
-                cardLayout.setBackgroundColor(
-                    Color.WHITE
-                )
-
-                cardLayout.elevation = 10f
-
-                val cardParams =
-                    LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-
-                cardParams.setMargins(
-                    0,
-                    0,
-                    0,
-                    40
-                )
-
-                cardLayout.layoutParams =
-                    cardParams
-
-                // TITLE
-
-                val title =
-                    TextView(this)
-
-                title.text =
-                    "Customer Booking Details"
-
-                title.textSize = 22f
-
-                title.setTextColor(
-                    Color.parseColor("#5B2C91")
-                )
-
-                title.setPadding(
-                    0,
-                    0,
-                    0,
-                    25
-                )
-
-                cardLayout.addView(title)
-
-                // DETAILS
-
-                val bookingText =
-                    TextView(this)
-
-                bookingText.text =
-
-                    "👤 Customer : $customer\n\n" +
-
-                            "📞 Phone : $customerPhone\n\n" +
-
-                            "🛠 Work : $work\n\n" +
-
-                            "📍 Address : $location\n\n" +
-
-                            "📌 Status : $status"
-
-                bookingText.textSize = 18f
-
-                bookingText.setTextColor(
-                    Color.BLACK
-                )
-
-                bookingText.setLineSpacing(
-                    10f,
-                    1f
-                )
-
-                cardLayout.addView(
-                    bookingText
-                )
-
-                // ACCEPT BUTTON
-
-                if (status == "PENDING") {
-
-                    val acceptBtn =
-                        Button(this)
-
-                    acceptBtn.text =
-                        "ACCEPT BOOKING"
-
-                    acceptBtn.setTextColor(
-                        Color.WHITE
-                    )
-
-                    acceptBtn.setBackgroundColor(
-                        Color.parseColor("#4CAF50")
-                    )
-
-                    val acceptParams =
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-
-                    acceptParams.setMargins(
-                        0,
-                        35,
-                        0,
-                        20
-                    )
-
-                    acceptBtn.layoutParams =
-                        acceptParams
-
-                    acceptBtn.setOnClickListener {
-
-                        val updatedBooking =
-                            booking.replace(
-                                "Status:PENDING",
-                                "Status:ACCEPTED"
-                            )
-
-                        bookingList[i] =
-                            updatedBooking
-
-                        val updatedData =
-                            bookingList.joinToString("###")
-
-                        sharedPreferences.edit()
-                            .putString(
-                                "bookings",
-                                updatedData
-                            )
-                            .apply()
-
-                        Toast.makeText(
-                            this,
-                            "Booking Accepted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        recreate()
-                    }
-
-                    cardLayout.addView(acceptBtn)
-
-                    // DECLINE BUTTON
-
-                    val declineBtn =
-                        Button(this)
-
-                    declineBtn.text =
-                        "DECLINE BOOKING"
-
-                    declineBtn.setTextColor(
-                        Color.WHITE
-                    )
-
-                    declineBtn.setBackgroundColor(
-                        Color.parseColor("#E53935")
-                    )
-
-                    declineBtn.setOnClickListener {
-
-                        val updatedBooking =
-                            booking.replace(
-                                "Status:PENDING",
-                                "Status:DECLINED"
-                            )
-
-                        bookingList[i] =
-                            updatedBooking
-
-                        val updatedData =
-                            bookingList.joinToString("###")
-
-                        sharedPreferences.edit()
-                            .putString(
-                                "bookings",
-                                updatedData
-                            )
-                            .apply()
-
-                        Toast.makeText(
-                            this,
-                            "Booking Declined",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        recreate()
-                    }
-
-                    cardLayout.addView(declineBtn)
-                }
-
-                // COMPLETE BUTTON
-
-                if (status == "ACCEPTED") {
-
-                    val completeBtn =
-                        Button(this)
-
-                    completeBtn.text =
-                        "MARK AS COMPLETED"
-
-                    completeBtn.setTextColor(
-                        Color.WHITE
-                    )
-
-                    completeBtn.setBackgroundColor(
-                        Color.parseColor("#FF9800")
-                    )
-
-                    val completeParams =
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-
-                    completeParams.setMargins(
-                        0,
-                        35,
-                        0,
-                        20
-                    )
-
-                    completeBtn.layoutParams =
-                        completeParams
-
-                    completeBtn.setOnClickListener {
-
-                        val updatedBooking =
-                            booking.replace(
-                                "Status:ACCEPTED",
-                                "Status:COMPLETED"
-                            )
-
-                        bookingList[i] =
-                            updatedBooking
-
-                        val updatedData =
-                            bookingList.joinToString("###")
-
-                        sharedPreferences.edit()
-                            .putString(
-                                "bookings",
-                                updatedData
-                            )
-                            .apply()
-
-                        Toast.makeText(
-                            this,
-                            "Work Completed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        recreate()
-                    }
-
-                    cardLayout.addView(completeBtn)
-                }
-
-                // CALL BUTTON
-
-                val callBtn =
-                    Button(this)
-
-                callBtn.text =
-                    "CALL CUSTOMER"
-
-                callBtn.setTextColor(
-                    Color.WHITE
-                )
-
-                callBtn.setBackgroundColor(
-                    Color.parseColor("#7E57C2")
-                )
-
-                val callParams =
-                    LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-
-                callParams.setMargins(
-                    0,
-                    25,
-                    0,
-                    20
-                )
-
-                callBtn.layoutParams =
-                    callParams
-
-                callBtn.setOnClickListener {
-
-                    val intent =
-                        Intent(
-                            Intent.ACTION_DIAL
-                        )
-
-                    intent.data =
-                        Uri.parse(
-                            "tel:$customerPhone"
-                        )
-
-                    startActivity(intent)
-                }
-
-                cardLayout.addView(callBtn)
-
-                // LOCATION BUTTON
-
-                val locationBtn =
-                    Button(this)
-
-                locationBtn.text =
-                    "OPEN CUSTOMER LOCATION"
-
-                locationBtn.setTextColor(
-                    Color.WHITE
-                )
-
-                locationBtn.setBackgroundColor(
-                    Color.parseColor("#5B2C91")
-                )
-
-                locationBtn.setOnClickListener {
-
-                    val intent =
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(
-                                "geo:0,0?q=$location"
-                            )
-                        )
-
-                    startActivity(intent)
-                }
-
-                cardLayout.addView(locationBtn)
-
-                mainLayout.addView(cardLayout)
             }
-        }
     }
 }

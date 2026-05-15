@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class EditWorkerProfileActivity : AppCompatActivity() {
 
@@ -31,6 +32,7 @@ class EditWorkerProfileActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_edit_worker_profile
         )
+
         val btnBack =
             findViewById<Button>(R.id.btnBack)
 
@@ -75,162 +77,88 @@ class EditWorkerProfileActivity : AppCompatActivity() {
         val oldPhone =
             intent.getStringExtra("phone") ?: ""
 
-        val sharedPreferences =
-            getSharedPreferences(
-                "WorkersData",
-                MODE_PRIVATE
-            )
+        val workersRef =
+            FirebaseDatabase.getInstance()
+                .getReference("Workers")
 
-        var workersData =
-            sharedPreferences.getString(
-                "workers",
-                ""
-            ) ?: ""
+        // LOAD WORKER DATA
 
-        val workersList =
-            workersData.split("###")
+        workersRef.child(oldPhone)
+            .get()
+            .addOnSuccessListener { snapshot ->
 
-        var oldWorkerData = ""
+                if (snapshot.exists()) {
 
-        var oldRating = "0"
+                    val name =
+                        snapshot.child("name")
+                            .value.toString()
 
-        var oldPeople = "0"
+                    val work =
+                        snapshot.child("work")
+                            .value.toString()
 
-        for (worker in workersList) {
+                    val phone =
+                        snapshot.child("phone")
+                            .value.toString()
 
-            if (
-                worker.contains("Phone:$oldPhone")
-            ) {
+                    val location =
+                        snapshot.child("location")
+                            .value.toString()
 
-                oldWorkerData = worker
+                    val rate =
+                        snapshot.child("rate")
+                            .value.toString()
 
-                val details =
-                    worker.split("|")
+                    val status =
+                        snapshot.child("status")
+                            .value.toString()
 
-                for (item in details) {
+                    val image =
+                        snapshot.child("image")
+                            .value.toString()
 
-                    when {
+                    editName.setText(name)
 
-                        item.startsWith("Name:") -> {
+                    editWork.setText(work)
 
-                            editName.setText(
-                                item.replace(
-                                    "Name:",
-                                    ""
-                                )
+                    editPhone.setText(phone)
+
+                    editLocation.setText(location)
+
+                    editRate.setText(rate)
+
+                    switchAvailability.isChecked =
+                        status == "Online"
+
+                    try {
+
+                        if (
+                            image.isNotEmpty() &&
+                            image.startsWith("content://")
+                        ) {
+
+                            imageUri =
+                                Uri.parse(image)
+
+                            imageProfile.setImageURI(
+                                imageUri
+                            )
+
+                        } else {
+
+                            imageProfile.setImageResource(
+                                R.drawable.ic_launcher_foreground
                             )
                         }
 
-                        item.startsWith("Work:") -> {
+                    } catch (e: Exception) {
 
-                            editWork.setText(
-                                item.replace(
-                                    "Work:",
-                                    ""
-                                )
-                            )
-                        }
-
-                        item.startsWith("Phone:") -> {
-
-                            editPhone.setText(
-                                item.replace(
-                                    "Phone:",
-                                    ""
-                                )
-                            )
-                        }
-
-                        item.startsWith("Location:") -> {
-
-                            editLocation.setText(
-                                item.replace(
-                                    "Location:",
-                                    ""
-                                )
-                            )
-                        }
-
-                        item.startsWith("Rate:") -> {
-
-                            editRate.setText(
-                                item.replace(
-                                    "Rate:",
-                                    ""
-                                )
-                            )
-                        }
-
-                        item.startsWith("Rating:") -> {
-
-                            oldRating =
-                                item.replace(
-                                    "Rating:",
-                                    ""
-                                )
-                        }
-
-                        item.startsWith("People:") -> {
-
-                            oldPeople =
-                                item.replace(
-                                    "People:",
-                                    ""
-                                )
-                        }
-
-                        item.startsWith("Status:") -> {
-
-                            val status =
-                                item.replace(
-                                    "Status:",
-                                    ""
-                                )
-
-                            switchAvailability.isChecked =
-                                status == "Online"
-                        }
-
-                        item.startsWith("Image:") -> {
-
-                            val image =
-                                item.replace(
-                                    "Image:",
-                                    ""
-                                )
-
-                            try {
-
-                                if (
-                                    image.isNotEmpty() &&
-                                    image.startsWith("content://")
-                                ) {
-
-                                    imageUri =
-                                        Uri.parse(image)
-
-                                    imageProfile.setImageURI(
-                                        imageUri
-                                    )
-
-                                } else {
-
-                                    imageProfile.setImageResource(
-                                        R.drawable.ic_launcher_foreground
-                                    )
-                                }
-
-                            } catch (e: Exception) {
-
-                                imageProfile.setImageResource(
-                                    R.drawable.ic_launcher_foreground
-                                )
-                            }
-                        }
+                        imageProfile.setImageResource(
+                            R.drawable.ic_launcher_foreground
+                        )
                     }
                 }
             }
-        }
 
         // CHOOSE IMAGE
 
@@ -284,38 +212,85 @@ class EditWorkerProfileActivity : AppCompatActivity() {
             val image =
                 imageUri?.toString() ?: ""
 
-            val updatedWorker =
+            // GET OLD RATING DATA
 
-                "Name:$name|" +
-                        "Work:$work|" +
-                        "Phone:$phone|" +
-                        "Location:$location|" +
-                        "Status:$status|" +
-                        "Image:$image|" +
-                        "Rate:$rate|" +
-                        "Rating:$oldRating|" +
-                        "People:$oldPeople"
+            workersRef.child(oldPhone)
+                .get()
+                .addOnSuccessListener { snapshot ->
 
-            workersData =
-                workersData.replace(
-                    oldWorkerData,
-                    updatedWorker
-                )
+                    val rating =
+                        snapshot.child("rating")
+                            .value.toString()
 
-            sharedPreferences.edit()
-                .putString(
-                    "workers",
-                    workersData
-                )
-                .apply()
+                    val totalRating =
+                        snapshot.child("totalRating")
+                            .value.toString()
 
-            Toast.makeText(
-                this,
-                "Profile Updated Successfully",
-                Toast.LENGTH_SHORT
-            ).show()
+                    val ratingCount =
+                        snapshot.child("ratingCount")
+                            .value.toString()
 
-            finish()
+                    val workerData =
+                        hashMapOf(
+                            "name" to name,
+                            "work" to work,
+                            "phone" to phone,
+                            "location" to location,
+                            "rate" to rate,
+                            "status" to status,
+                            "image" to image,
+                            "rating" to rating,
+                            "totalRating" to totalRating,
+                            "ratingCount" to ratingCount
+                        )
+
+                    // SAVE UPDATED DATA
+
+                    workersRef.child(phone)
+                        .setValue(workerData)
+                        .addOnSuccessListener {
+
+                            // DELETE OLD NODE IF PHONE CHANGED
+
+                            if (oldPhone != phone) {
+
+                                workersRef.child(oldPhone)
+                                    .removeValue()
+                            }
+
+                            Toast.makeText(
+                                this,
+                                "Profile Updated Successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            // OPEN UPDATED PROFILE
+
+                            val intent =
+                                Intent(
+                                    this,
+                                    WorkerProfileActivity::class.java
+                                )
+
+                            intent.putExtra(
+                                "phone",
+                                phone
+                            )
+
+                            startActivity(intent)
+
+                            finish()
+                        }
+
+                        .addOnFailureListener {
+
+                            Toast.makeText(
+                                this,
+                                "Update Failed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
         }
     }
 

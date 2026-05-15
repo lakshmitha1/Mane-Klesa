@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class WorkerLoginActivity : AppCompatActivity() {
 
@@ -14,6 +15,7 @@ class WorkerLoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_worker_login)
+
         val btnBack =
             findViewById<Button>(R.id.btnBack)
 
@@ -21,66 +23,72 @@ class WorkerLoginActivity : AppCompatActivity() {
 
             finish()
         }
+
         val editPhoneLogin =
             findViewById<EditText>(R.id.editPhone)
+
         val btnLogin =
             findViewById<Button>(R.id.btnLogin)
 
         btnLogin.setOnClickListener {
 
             val loginPhone =
-                editPhoneLogin.text.toString()
+                editPhoneLogin.text.toString().trim()
 
-            val sharedPreferences =
-                getSharedPreferences(
-                    "WorkersData",
-                    MODE_PRIVATE
-                )
-
-            val workersData =
-                sharedPreferences.getString(
-                    "workers",
-                    ""
-                ) ?: ""
-
-            val workersList =
-                workersData.split("###")
-
-            var workerFound = false
-
-            for (worker in workersList) {
-
-                if (
-                    worker.contains("Phone:$loginPhone")
-                ) {
-
-                    workerFound = true
-
-                    val intent =
-                        Intent(
-                            this,
-                            WorkerDashboardActivity::class.java
-                        )
-
-                    intent.putExtra(
-                        "phone",
-                        loginPhone
-                    )
-
-                    startActivity(intent)
-
-                    break
-                }
-            }
-
-            if (!workerFound) {
+            if (loginPhone.isEmpty()) {
 
                 Toast.makeText(
                     this,
-                    "Worker Not Registered",
+                    "Enter Phone Number",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                return@setOnClickListener
             }
+
+            // FIREBASE
+
+            val workersRef =
+                FirebaseDatabase.getInstance()
+                    .getReference("Workers")
+
+            workersRef.child(loginPhone)
+                .get()
+                .addOnSuccessListener { snapshot ->
+
+                    if (snapshot.exists()) {
+
+                        val intent =
+                            Intent(
+                                this,
+                                WorkerDashboardActivity::class.java
+                            )
+
+                        intent.putExtra(
+                            "phone",
+                            loginPhone
+                        )
+
+                        startActivity(intent)
+
+                    } else {
+
+                        Toast.makeText(
+                            this,
+                            "Worker Not Registered",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                .addOnFailureListener {
+
+                    Toast.makeText(
+                        this,
+                        "Login Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
     }
 }

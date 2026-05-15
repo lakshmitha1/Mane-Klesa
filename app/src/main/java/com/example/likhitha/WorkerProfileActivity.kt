@@ -1,11 +1,13 @@
 package com.example.likhitha
 
+import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.Gravity
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class WorkerProfileActivity : AppCompatActivity() {
 
@@ -13,105 +15,320 @@ class WorkerProfileActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_worker_profile)
+        val scrollView =
+            ScrollView(this)
 
-        val btnBack =
-            findViewById<Button>(R.id.btnBack)
+        scrollView.setBackgroundColor(
+            Color.parseColor("#EDE7F6")
+        )
 
-        btnBack.setOnClickListener {
+        val mainLayout =
+            LinearLayout(this)
 
+        mainLayout.orientation =
+            LinearLayout.VERTICAL
+
+        mainLayout.setPadding(
+            35,
+            35,
+            35,
+            35
+        )
+
+        scrollView.addView(mainLayout)
+
+        setContentView(scrollView)
+
+        // BACK BUTTON
+
+        val backButton =
+            Button(this)
+
+        backButton.text =
+            "← Back"
+
+        backButton.setBackgroundColor(
+            Color.parseColor("#7E57C2")
+        )
+
+        backButton.setTextColor(Color.WHITE)
+
+        backButton.setOnClickListener {
             finish()
         }
 
-        val imageProfile =
-            findViewById<ImageView>(R.id.imageProfile)
+        mainLayout.addView(backButton)
 
-        val textName =
-            findViewById<TextView>(R.id.textName)
+        // IMAGE
 
-        val textWork =
-            findViewById<TextView>(R.id.textWork)
+        val imageView =
+            ImageView(this)
 
-        val textPhone =
-            findViewById<TextView>(R.id.textPhone)
+        val imageParams =
+            LinearLayout.LayoutParams(
+                300,
+                300
+            )
 
-        val textLocation =
-            findViewById<TextView>(R.id.textLocation)
+        imageParams.gravity =
+            Gravity.CENTER_HORIZONTAL
 
-        val textStatus =
-            findViewById<TextView>(R.id.textStatus)
+        imageParams.setMargins(
+            0,
+            40,
+            0,
+            30
+        )
 
-        val textRating =
-            findViewById<TextView>(R.id.textRating)
+        imageView.layoutParams =
+            imageParams
 
-        // GET DATA
+        imageView.scaleType =
+            ImageView.ScaleType.CENTER_CROP
 
-        val name =
-            intent.getStringExtra("name") ?: ""
+        imageView.setImageResource(
+            R.drawable.worker
+        )
 
-        val work =
-            intent.getStringExtra("work") ?: ""
+        mainLayout.addView(imageView)
+
+        // TITLE
+
+        val title =
+            TextView(this)
+
+        title.text =
+            "Worker Profile"
+
+        title.textSize = 26f
+
+        title.gravity =
+            Gravity.CENTER
+
+        title.setTextColor(
+            Color.parseColor("#5B2C91")
+        )
+
+        title.setPadding(
+            0,
+            0,
+            0,
+            40
+        )
+
+        mainLayout.addView(title)
+
+        // GET PHONE ONLY
 
         val phone =
             intent.getStringExtra("phone") ?: ""
 
-        val location =
-            intent.getStringExtra("location") ?: ""
+        // DETAILS FUNCTION
 
-        val status =
-            intent.getStringExtra("status") ?: ""
+        fun createBox(text: String): TextView {
 
-        val image =
-            intent.getStringExtra("image") ?: ""
+            val tv =
+                TextView(this)
 
-        val rating =
-            intent.getStringExtra("rating") ?: "0"
+            tv.text = text
 
-        // SET TEXT
+            tv.textSize = 20f
 
-        textName.text =
-            "Name: $name"
+            tv.setTextColor(Color.BLACK)
 
-        textWork.text =
-            "Work: $work"
-
-        textPhone.text =
-            "Phone: $phone"
-
-        textLocation.text =
-            "Location: $location"
-
-        textStatus.text =
-            "Status: $status"
-
-        textRating.text =
-            "Rating: $rating ⭐"
-
-        // IMAGE LOAD
-
-        if (
-            image.isNotEmpty() &&
-            image != "null"
-        ) {
-
-            try {
-
-                imageProfile.setImageURI(
-                    Uri.parse(image)
-                )
-
-            } catch (e: Exception) {
-
-                imageProfile.setImageResource(
-                    R.drawable.worker1
-                )
-            }
-
-        } else {
-
-            imageProfile.setImageResource(
-                R.drawable.worker1
+            tv.setPadding(
+                30,
+                30,
+                30,
+                30
             )
+
+            tv.setBackgroundColor(
+                Color.parseColor("#DCD6F7")
+            )
+
+            val params =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            params.setMargins(
+                0,
+                0,
+                0,
+                25
+            )
+
+            tv.layoutParams =
+                params
+
+            return tv
         }
+
+        // CREATE TEXT BOXES
+
+        val nameText =
+            createBox("Name: Loading...")
+
+        val workText =
+            createBox("Work: Loading...")
+
+        val phoneText =
+            createBox("Phone: Loading...")
+
+        val locationText =
+            createBox("Location: Loading...")
+
+        val statusText =
+            createBox("Status: Loading...")
+
+        val rateText =
+            createBox("Rate: Loading...")
+
+        val ratingText =
+            createBox("Rating: Loading... ⭐")
+
+        mainLayout.addView(nameText)
+        mainLayout.addView(workText)
+        mainLayout.addView(phoneText)
+        mainLayout.addView(locationText)
+        mainLayout.addView(statusText)
+        mainLayout.addView(rateText)
+        mainLayout.addView(ratingText)
+
+        // EDIT PROFILE BUTTON
+
+        val editButton =
+            Button(this)
+
+        editButton.text =
+            "✏ EDIT PROFILE"
+
+        editButton.setBackgroundColor(
+            Color.parseColor("#7E57C2")
+        )
+
+        editButton.setTextColor(
+            Color.WHITE
+        )
+
+        editButton.textSize = 18f
+
+        editButton.setOnClickListener {
+
+            val intent =
+                Intent(
+                    this,
+                    EditWorkerProfileActivity::class.java
+                )
+
+            intent.putExtra(
+                "phone",
+                phone
+            )
+
+            startActivity(intent)
+        }
+
+        mainLayout.addView(editButton)
+
+        // FIREBASE
+
+        val workersRef =
+            FirebaseDatabase.getInstance()
+                .getReference("Workers")
+
+        // LOAD LIVE DATA
+
+        workersRef.child(phone)
+            .get()
+            .addOnSuccessListener { snapshot ->
+
+                if (snapshot.exists()) {
+
+                    val name =
+                        snapshot.child("name")
+                            .value.toString()
+
+                    val work =
+                        snapshot.child("work")
+                            .value.toString()
+
+                    val newPhone =
+                        snapshot.child("phone")
+                            .value.toString()
+
+                    val location =
+                        snapshot.child("location")
+                            .value.toString()
+
+                    val status =
+                        snapshot.child("status")
+                            .value.toString()
+
+                    val rate =
+                        snapshot.child("rate")
+                            .value.toString()
+
+                    val rating =
+                        snapshot.child("rating")
+                            .value.toString()
+
+                    val image =
+                        snapshot.child("image")
+                            .value.toString()
+
+                    // SET DATA
+
+                    nameText.text =
+                        "Name: $name"
+
+                    workText.text =
+                        "Work: $work"
+
+                    phoneText.text =
+                        "Phone: $newPhone"
+
+                    locationText.text =
+                        "Location: $location"
+
+                    statusText.text =
+                        "Status: $status"
+
+                    rateText.text =
+                        "Rate: ₹$rate"
+
+                    ratingText.text =
+                        "Rating: $rating ⭐"
+
+                    // LOAD IMAGE
+
+                    try {
+
+                        if (
+                            image.isNotEmpty() &&
+                            image.startsWith("content://")
+                        ) {
+
+                            imageView.setImageURI(
+                                Uri.parse(image)
+                            )
+
+                        } else {
+
+                            imageView.setImageResource(
+                                R.drawable.worker
+                            )
+                        }
+
+                    } catch (e: Exception) {
+
+                        imageView.setImageResource(
+                            R.drawable.worker
+                        )
+                    }
+                }
+            }
     }
 }

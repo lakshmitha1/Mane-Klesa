@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class BookingActivity : AppCompatActivity() {
 
@@ -46,13 +47,13 @@ class BookingActivity : AppCompatActivity() {
         btnConfirmBooking.setOnClickListener {
 
             val customerName =
-                editCustomerName.text.toString()
+                editCustomerName.text.toString().trim()
 
             val customerPhone =
-                editCustomerPhone.text.toString()
+                editCustomerPhone.text.toString().trim()
 
             val customerAddress =
-                editCustomerAddress.text.toString()
+                editCustomerAddress.text.toString().trim()
 
             if (
                 customerName.isEmpty() ||
@@ -78,47 +79,68 @@ class BookingActivity : AppCompatActivity() {
 
                 } else {
 
-                    val bookingDetails =
+                    // FIREBASE
 
-                        "Worker:$workerName|" +
-                                "Work:$workerWork|" +
-                                "WorkerPhone:$workerPhone|" +
-                                "Customer:$customerName|" +
-                                "CustomerPhone:$customerPhone|" +
-                                "Location:$customerAddress|" +
-                                "Date:Today|" +
-                                "Status:Pending###"
+                    val database =
+                        FirebaseDatabase.getInstance()
 
-                    // IMPORTANT FIX
-                    val sharedPreferences =
-                        getSharedPreferences(
-                            "Bookings",
-                            MODE_PRIVATE
+                    val bookingsRef =
+                        database.getReference("Bookings")
+
+                    val customersRef =
+                        database.getReference("Customers")
+
+                    // SAVE CUSTOMER
+
+                    val customerData =
+                        hashMapOf(
+                            "name" to customerName,
+                            "phone" to customerPhone,
+                            "address" to customerAddress
                         )
 
-                    val oldBookings =
-                        sharedPreferences.getString(
-                            "booking_list",
-                            ""
-                        ) ?: ""
+                    customersRef.child(customerPhone)
+                        .setValue(customerData)
 
-                    val updatedBookings =
-                        oldBookings + bookingDetails
+                    // CREATE BOOKING
 
-                    sharedPreferences.edit()
-                        .putString(
-                            "booking_list",
-                            updatedBookings
+                    val bookingId =
+                        bookingsRef.push().key ?: ""
+
+                    val bookingData =
+                        hashMapOf(
+                            "workerName" to workerName,
+                            "workerWork" to workerWork,
+                            "workerPhone" to workerPhone,
+                            "customerName" to customerName,
+                            "customerPhone" to customerPhone,
+                            "customerLocation" to customerAddress,
+                            "date" to "Today",
+                            "status" to "PENDING"
                         )
-                        .apply()
 
-                    Toast.makeText(
-                        this,
-                        "Booking Sent Successfully",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    bookingsRef.child(bookingId)
+                        .setValue(bookingData)
 
-                    finish()
+                        .addOnSuccessListener {
+
+                            Toast.makeText(
+                                this,
+                                "Booking Sent Successfully",
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                            finish()
+                        }
+
+                        .addOnFailureListener {
+
+                            Toast.makeText(
+                                this,
+                                "Booking Failed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                 }
             }
         }

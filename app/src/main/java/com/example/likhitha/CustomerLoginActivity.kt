@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class CustomerLoginActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class CustomerLoginActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_customer_login
         )
+
         val btnBack =
             findViewById<Button>(R.id.btnBack)
 
@@ -45,21 +47,51 @@ class CustomerLoginActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
 
-            } else {
-
-                val intent =
-                    Intent(
-                        this,
-                        CustomerBookingsActivity::class.java
-                    )
-
-                intent.putExtra(
-                    "customerPhone",
-                    customerPhone
-                )
-
-                startActivity(intent)
+                return@setOnClickListener
             }
+
+            val customersRef =
+                FirebaseDatabase.getInstance()
+                    .getReference("Customers")
+
+            customersRef.child(customerPhone)
+                .get()
+
+                .addOnSuccessListener { snapshot ->
+
+                    if (snapshot.exists()) {
+
+                        val intent =
+                            Intent(
+                                this,
+                                CustomerBookingsActivity::class.java
+                            )
+
+                        intent.putExtra(
+                            "customerPhone",
+                            customerPhone
+                        )
+
+                        startActivity(intent)
+
+                    } else {
+
+                        Toast.makeText(
+                            this,
+                            "Customer Not Registered",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                .addOnFailureListener {
+
+                    Toast.makeText(
+                        this,
+                        "Login Failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
     }
 }

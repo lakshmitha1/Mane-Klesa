@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterWorkerActivity : AppCompatActivity() {
 
@@ -27,6 +28,7 @@ class RegisterWorkerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_register_worker)
+
         val btnBack =
             findViewById<Button>(R.id.btnBack)
 
@@ -63,6 +65,7 @@ class RegisterWorkerActivity : AppCompatActivity() {
             findViewById(R.id.imageProfile)
 
         // CHOOSE IMAGE
+
         btnChooseImage.setOnClickListener {
 
             val intent = Intent()
@@ -70,18 +73,24 @@ class RegisterWorkerActivity : AppCompatActivity() {
             intent.type = "image/*"
 
             intent.action =
-                Intent.ACTION_GET_CONTENT
+                Intent.ACTION_OPEN_DOCUMENT
+
+            intent.addFlags(
+                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+            )
+
+            intent.addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
 
             startActivityForResult(
-                Intent.createChooser(
-                    intent,
-                    "Select Image"
-                ),
+                intent,
                 PICK_IMAGE
             )
         }
 
         // SAVE PROFILE
+
         btnSave.setOnClickListener {
 
             val name =
@@ -109,6 +118,7 @@ class RegisterWorkerActivity : AppCompatActivity() {
                 imageUri?.toString() ?: ""
 
             // VALIDATION
+
             if (
                 name.isEmpty() ||
                 work.isEmpty() ||
@@ -126,87 +136,88 @@ class RegisterWorkerActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val sharedPreferences =
-                getSharedPreferences(
-                    "WorkersData",
-                    MODE_PRIVATE
-                )
+            // FIREBASE
 
-            val oldWorkers =
-                sharedPreferences.getString(
-                    "workers",
-                    ""
-                ) ?: ""
+            val workersRef =
+                FirebaseDatabase.getInstance()
+                    .getReference("Workers")
 
             // CHECK DUPLICATE PHONE
-            val workersList =
-                oldWorkers.split("###")
 
-            for (worker in workersList) {
+            workersRef.child(phone)
+                .get()
+                .addOnSuccessListener { snapshot ->
 
-                if (
-                    worker.contains("Phone:$phone")
-                ) {
+                    if (snapshot.exists()) {
 
-                    Toast.makeText(
-                        this,
-                        "Profile Already Exists With This Phone Number",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.makeText(
+                            this,
+                            "Profile Already Exists With This Phone Number",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                    return@setOnClickListener
+                    } else {
+
+                        val workerData =
+                            hashMapOf(
+                                "name" to name,
+                                "work" to work,
+                                "phone" to phone,
+                                "location" to location,
+                                "rate" to rate,
+                                "status" to status,
+                                "image" to image,
+                                "rating" to "0",
+                                "totalRating" to "0",
+                                "ratingCount" to "0"
+                            )
+
+                        // SAVE TO FIREBASE
+
+                        workersRef.child(phone)
+                            .setValue(workerData)
+                            .addOnSuccessListener {
+
+                                Toast.makeText(
+                                    this,
+                                    "Profile Saved Successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                // CLEAR FIELDS
+
+                                editName.text.clear()
+
+                                editWork.text.clear()
+
+                                editPhone.text.clear()
+
+                                editLocation.text.clear()
+
+                                editRate.text.clear()
+
+                                switchAvailability.isChecked = false
+
+                                imageProfile.setImageDrawable(null)
+
+                                imageUri = null
+                            }
+
+                            .addOnFailureListener {
+
+                                Toast.makeText(
+                                    this,
+                                    "Registration Failed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
                 }
-            }
-
-            // SAVE WORKER
-            val worker =
-                "Name:$name|" +
-                        "Work:$work|" +
-                        "Phone:$phone|" +
-                        "Location:$location|" +
-                        "Rate:$rate|" +
-                        "Status:$status|" +
-                        "Image:$image|" +
-                        "Rating:0|" +
-                        "TotalRating:0|" +
-                        "RatingCount:0"
-
-            val newWorkers =
-                oldWorkers + worker + "###"
-
-            sharedPreferences.edit()
-                .putString(
-                    "workers",
-                    newWorkers
-                )
-                .apply()
-
-            Toast.makeText(
-                this,
-                "Profile Saved Successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            // CLEAR FIELDS
-            editName.text.clear()
-
-            editWork.text.clear()
-
-            editPhone.text.clear()
-
-            editLocation.text.clear()
-
-            editRate.text.clear()
-
-            switchAvailability.isChecked = false
-
-            imageProfile.setImageDrawable(null)
-
-            imageUri = null
         }
     }
 
     // GET SELECTED IMAGE
+
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
@@ -226,22 +237,26 @@ class RegisterWorkerActivity : AppCompatActivity() {
             data.data != null
         ) {
 
-            imageUri = data.data
-
-            imageProfile.setImageURI(
-                imageUri
-            )
-
             try {
+
+                imageUri = data.data
 
                 contentResolver.takePersistableUriPermission(
                     imageUri!!,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
 
+                imageProfile.setImageURI(
+                    imageUri
+                )
+
             } catch (e: Exception) {
 
-                e.printStackTrace()
+                Toast.makeText(
+                    this,
+                    "Image Load Failed",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
